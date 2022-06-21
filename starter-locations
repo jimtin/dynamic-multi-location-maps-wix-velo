@@ -1,0 +1,52 @@
+"Locations": [
+    {
+        "Title": "Opera House",
+        "latitude": -33.8571,
+        "longitude": 151.2147
+    },
+    {
+        "Title": "Harbour Bridge",
+        "latitude": -33.8524,
+        "longitude": 151.2108
+    },
+    {
+        "Title": "Best Coffee",
+        "latitude": -33.8472,
+        "longitude": 151.2128
+    },
+    {
+        "Title": "Best Fish n Chips",
+        "latitude": -33.8434,
+        "longitude": 151.2819
+    },
+    {
+        "Title": "Great Smoothie",
+        "latitude": -33.9194,
+        "longitude": 151.2575
+    },
+    {
+        "Title": "Best Breakfast",
+        "latitude": -33.6926,
+        "longitude": 150.9258
+    },
+    {
+        "Title": "Best Fireworks View",
+        "latitude": -33.8522,
+        "longitude": 151.2448
+    },
+    {
+        "Title": "Great Walking Track",
+        "latitude": -33.5804,
+        "longitude": 151.3099
+    },
+    {
+        "Title": "Awesome Picnic Spot",
+        "latitude": -33.5472,
+        "longitude": 151.2257
+    },
+    {
+        "Title": "Great Dinner Spot",
+        "latitude": -33.8064,
+        "longitude": 151.0883
+    }
+]

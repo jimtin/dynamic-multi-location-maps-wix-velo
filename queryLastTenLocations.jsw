@@ -1,0 +1,158 @@
+// Import the Wix Data Libraries required
+import wixData from 'wix-data';
+
+// Create a function which can be called from the front end asynchronously to query and process location data
+export async function getLocationData() { // No parameters as we are always going to call the last 10 locations
+    // Query database collection for last 10 entries
+    let locations = await getLastTenEntries()
+
+    // Process the entries to calculate a midpoint
+    let midpoint = await calculateMidpoint(locations);
+
+    // Provide the target
+
+
+    // Create a full array with the fields converted into human friendly latitude and longitude monikers (this is because the form defaulted to different field names)
+    let locationObject = {
+        Midpoint: midpoint,
+        Locations: locations,
+        target: "google-maps-iframe",
+    }
+
+    // Return the outcome
+    return locationObject;
+    
+}
+
+// Create a function to query the last ten entries or return a default value if there's not enough
+// Create this as async as it involves a database query
+async function getLastTenEntries() {
+    // Create the query for Wix Data to process. The name of my collection was 'paymentForm07'
+    let lastTen = await wixData.query('paymentForm07').descending("_createdDate").limit(10).find().then((results) => {
+        // Check if there are 10 results. If not, return a default location.
+        if(results.items.length > 0){
+            // This part is necessary if you didn't name your fields in a human friendly way
+            let returnArray = [];
+            // For each element in the array, do the following
+            results.items.forEach(element => {
+                let item = {
+                    Title: element.shortAnswerField, // The name of my Title was 'shortAnswerField'
+                    latitude: element.numberField, // The name of my latitude was 'numberField'
+                    longitude: element.numberField2, // The name of my longitude was 'numberField2'
+                }
+                returnArray.push(item);
+            })
+            return returnArray;
+
+            // Use this if you like the way you've named your fields
+            // return results.items
+        }else{
+            // If there are no locations in the array, return a default location
+            let defaultLocation = {
+                latitude: -33.8571, 
+                longitude: 151.2150, 
+                Title: "Opera House"
+            }
+            return defaultLocation
+        }
+
+    }).catch((error) => { // We should always catch errors. 
+        let errorMsg = error;
+        console.log(errorMsg); // Send to the logging platform
+    });
+    // Return the query
+    return lastTen;
+}
+
+// Calculate the Geographic Midpoint of a given set of coordinates
+// http://www.geomidpoint.com/calculation.html
+async function calculateMidpoint(coordinateArray){
+    // Step 1: Convert decimal degrees (used for GPS etc) in Cartesian Coordinates
+
+    // We start by converting into Radians
+    // Create an array to store the Radians Array. 
+    let radiansArray = []
+    
+    // Iterate through the coordinates array and calculate
+    coordinateArray.forEach(element => {
+        // Calculate the latitude Radians
+        let latRadians = element.latitude * Math.PI/180 // We use Javascripts built in Math library to get PI
+
+        // Calculate the longitude Radians
+        let longRadians = element.longitude * Math.PI/180 // Using Javascripts build in Math library to get PI again
+        
+        // Construct back into an object to maintain data integrity
+        let radianLocation = {
+            Title: element.Title,
+            latitude: latRadians,
+            longitude: longRadians
+        }
+
+        // Push to the Radian Array
+        radiansArray.push(radianLocation);
+    });
+
+    // Next we create our cartesian coordinates
+    // Create an array to store the Cartesian Coordinates
+    let cartesianArray = []
+
+    // Interate through the radiansArray to calculate
+    radiansArray.forEach(element => {
+        // Calculate x
+        let x = Math.cos(element.latitude) * Math.cos(element.longitude);
+        // Calculate y
+        let y = Math.cos(element.latitude) * Math.sin(element.longitude);
+        // Calculate z
+        let z = Math.sin(element.latitude);
+
+        // Construct into a cartesian object
+        let cartesianLocation = {
+            Title: element.Title,
+            xLoc: x,
+            yLoc: y,
+            zLoc: z
+        }
+
+        // Push to the cartesianArray
+        cartesianArray.push(cartesianLocation)
+    });
+
+    // Not relevant for this example, but we could also set this up to weight each location if needed. 
+
+    // Iterate through the array and calculate the average for x, y, z
+
+    // Set up variable to store the totals of each
+    let xtotal = 0;
+    let ytotal = 0;
+    let ztotal = 0;
+
+    cartesianArray.forEach(element => {
+        xtotal += element.xLoc;
+        ytotal += element.yLoc; 
+        ztotal += element.zLoc;
+    });
+
+    // Calculate the average by dividing the totals by the number of elements
+    let xavg = xtotal / (coordinateArray.length + 1);
+    let yavg = ytotal / (coordinateArray.length + 1);
+    let zavg = ztotal / (coordinateArray.length + 1);
+
+    // Convert averages back to into radians longitude and latitude
+    let avgLon = Math.atan2(yavg, xavg); 
+    let avgHyp = Math.sqrt(xavg * xavg + yavg * yavg);
+    let avgLat = Math.atan2(zavg, avgHyp);
+
+    // Convert the location back into degrees
+    let avgLatDegrees = avgLat * 180/Math.PI;
+    let avgLongDegrees = avgLon * 180/Math.PI;
+
+    // Turn into an object
+    let midpointObject = {
+        Title: "Midpoint",
+        latitude: avgLatDegrees,
+        longitude: avgLongDegrees
+    }
+
+    // Return the object
+    return midpointObject;
+}

@@ -1,0 +1,113 @@
+<html>
+  <head>
+    <title>Simple Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <div id="map" style="height: 100%; width: 100%;"></div>
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4hM7wfDbO6_Y0l6rrdF3wGOjUlKqQ4Cg&callback=initMap&v=weekly"
+      
+    ></script>
+    <script>
+        let map;
+        let markerImage = "https://static.wixstatic.com/media/c76efe_f7df674bf5d54c91a9bf10508b213772~mv2.png";
+        let locations = [];
+        let myURL = "null" // Change the * to your URL
+
+        myURL = getParentUrl();
+
+        function initMap() {
+            // Test if the locations array has no locations
+            if(locations.length < 1){
+                // If empty, send a command to the parent page to get locations
+                troubleShootText("cmd", "getLoc");
+            }
+
+            // Process received messages
+            window.onmessage = (event) => {
+                // The only messages we're interested in are those with this target
+                if(event.data.target === "google-maps-iframe"){
+                    
+                    // Set the Midpoint 
+                    midpoint = event.data.Midpoint;
+                    midpointLocation = { lat: midpoint.latitude, lng: midpoint.longitude};
+                    
+                    // Update the locations array
+                    locations = event.data.Locations;
+
+                    // Set our map
+                    map = new google.maps.Map(document.getElementById("map"), {
+                        mapID: "3e8d98151efc3905",
+                        center: midpointLocation,
+                        zoom: 10,
+                    });
+
+                    // Set the Midpoint Marker
+                    new google.maps.Marker({
+                        position: midpointLocation,
+                        map,
+                        title: midpoint.Title,
+                        icon: markerImage,
+                        label: midpoint.Title,
+                        optimized: true,
+                    });
+
+                    // Set the rest of the markers
+                    locations.forEach(location => {
+                        // Create the position for each location
+                        let position = {lat: location.latitude, lng: location.longitude};
+                        new google.maps.Marker({
+                            position: position,
+                            map,
+                            title: location.Title,
+                            icon: markerImage,
+                            label: location.Title,
+                            optimized: true,
+                        });
+                    });
+
+                    // Set up the map so it always displays all the markers
+                    var latlngbounds = new google.maps.LatLngBounds();
+                    locations.forEach(location => {
+                        // Extract the position
+                        let position = {lat: location.latitude, lng: location.longitude};
+                        latlngbounds.extend(position);
+                    });
+
+                    // Declare to the map to fit the bounds
+                    map.fitBounds(latlngbounds);
+                }
+            }
+        }
+
+        function troubleShootText(type, message){
+            let messageObject = {
+                type: type,
+                message: message, 
+            }
+            window.parent.postMessage(messageObject, myURL); // Change the * to your URL
+        }
+
+        function getParentUrl() {
+            // Check if this is being used in an iframe / HTML Element
+            var isInIframe = (parent !== window),
+                // If it is not, then set URL to null
+                parentUrl = null;
+        
+            // If it is, get the documents referrer
+            if (isInIframe) {
+                parentUrl = document.referrer;
+            }
+        
+            // Return the outcome
+            return parentUrl;
+        }
+
+        window.initMap = initMap;
+        
+        </script>
+    </body>
+</html>

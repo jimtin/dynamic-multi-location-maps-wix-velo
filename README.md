@@ -10,6 +10,7 @@ Enjoy, and don't forget to give me star or shoutout <3
 ## Episodes In the Series
 ### Episode 1: Setting up Our Website
 Link: https://appnologyjames.medium.com/setting-up-our-website-multiple-markers-on-google-maps-with-wix-velo-d110a3542994
+
 **Overview:**
 This episode sets up the website we'll be using for the rest of series. We cover the following:
 1. Designing the page
@@ -23,6 +24,7 @@ We also cover some of the security issues in our design, such as:
 
 ### Episode 2: Querying Location Database and Calculating the Midpoint
 Link: https://appnologyjames.medium.com/querying-location-collection-and-calculating-midpoint-multiple-markers-on-google-maps-with-wix-d93e3389a12a
+
 **Overview:**
 This episode explores querying our backend database (called a collection on Wix) to get the last 10 locations submitted, then calculating the midpoint. We cover the following:
 1. Setting up our backend `.jsw` file for backend functionality
@@ -35,6 +37,7 @@ We also cover some of the security aspects of our design choices, including:
 
 ### Episode 3: Displaying Map and Marker
 Link: https://appnologyjames.medium.com/displaying-map-marker-multiple-markers-on-google-maps-with-wix-velo-7a9f2209fc7a
+
 **Overview**
 This episode explores getting our HTML Frame to display a standard Google Map with a customised marker. We cover:
 1. Setting up a Google Maps API Key
@@ -47,6 +50,7 @@ We also cover some of the security aspects of our design choices, including:
 
 ### Episode 4: HTML Elements and Sending Data
 Link: https://appnologyjames.medium.com/html-elements-and-sending-data-multiple-markers-on-google-maps-with-wix-velo-2f4e8a6f3336
+
 **Overview**
 This episode covers setting up our HTML Element (iframe) and parent pages to exchange information. We cover: 
 1. Setting up our HTML Component to send and receive data
@@ -61,6 +65,7 @@ We also cover some of the security aspects of our design choices, including:
 
 ### Auto Updating and Resizing Map
 Link: https://appnologyjames.medium.com/auto-updating-and-resizing-map-multiple-markers-on-google-maps-with-wix-velo-874b68c77483
+
 **Overview**
 In this final episode, we finish off our series by making sure that the map dynamically updates and resizes when a new location is submitted. We cover:
 1. Triggering a map update upon form submission
